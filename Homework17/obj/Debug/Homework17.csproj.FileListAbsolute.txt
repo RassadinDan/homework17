@@ -18,3 +18,5 @@ D:\Work\Homework\Homework17\Homework17\obj\Debug\Authentication.g.cs
 D:\Work\Homework\Homework17\Homework17\obj\Debug\Authentication.baml
 D:\Work\Homework\Homework17\Homework17\obj\Debug\AddWindow.g.cs
 D:\Work\Homework\Homework17\Homework17\obj\Debug\AddWindow.baml
+D:\Work\Homework\Homework17\Homework17\obj\Debug\OrdersView.g.cs
+D:\Work\Homework\Homework17\Homework17\obj\Debug\OrdersView.baml

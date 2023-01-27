@@ -142,5 +142,11 @@ namespace Homework17
             row.Row.Delete();
             adapter.Update(table);
         }
+
+        private void MenuItemViewClick(object sender, RoutedEventArgs e)
+        {
+            OrdersView orders = new OrdersView();
+            orders.ShowDialog();
+        }
     }
 }

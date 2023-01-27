@@ -54,6 +54,9 @@
                     
                     <MenuItem Header="Удалить" 
                               Click="MenuItemDeleteClick"/>
+
+                    <MenuItem Header="Показаться заказы"
+                              Click="MenuItemViewClick"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
