@@ -112,7 +112,6 @@ namespace Homework17
 
             row = (DataRowView)Data.SelectedItem;
             row.BeginEdit();
-            //adapter.Update(table);
         }
 
         private void DGCurrentCellChanged(object sender, EventArgs e)
@@ -145,7 +144,9 @@ namespace Homework17
 
         private void MenuItemViewClick(object sender, RoutedEventArgs e)
         {
-            OrdersView orders = new OrdersView();
+            row = (DataRowView)Data.SelectedItem;
+            string email = Convert.ToString((Email.GetCellContent(row) as TextBlock).Text);
+            OrdersView orders = new OrdersView(email);
             orders.ShowDialog();
         }
     }
