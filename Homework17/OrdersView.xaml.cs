@@ -24,15 +24,35 @@ namespace Homework17
         SqlConnection connection;
         SqlDataAdapter adapter;
         DataTable table;
-        DataRowView row;
-        public OrdersView()
+        string email;
+        public OrdersView(string email)
         {
+            this.email = email;
             InitializeComponent();
+            Preparing();
         }
 
         private void Preparing()
         {
+            SqlConnectionStringBuilder strCon = new SqlConnectionStringBuilder()
+            {
+                DataSource = @"(localdb)\MSSQLLocalDB",
+                InitialCatalog = @"Orders",
+                IntegratedSecurity = true,
+                Pooling = false
+            };
 
+            connection = new SqlConnection(strCon.ConnectionString);
+            table = new DataTable();
+            adapter = new SqlDataAdapter();
+
+            var sql = $@"SELECT * FROM OrderList
+                        WHERE [email] = '{email}'
+                        ORDER BY OrderList.Id;";
+            adapter.SelectCommand = new SqlCommand(sql, connection);
+
+            adapter.Fill(table);
+            Data2.DataContext = table.DefaultView;
         }
     }
 }
