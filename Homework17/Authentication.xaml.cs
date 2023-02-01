@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Data.Entity;
 
 namespace Homework17
 {
@@ -21,10 +22,10 @@ namespace Homework17
     /// </summary>
     public partial class Authentication : Window
     {
-        public SqlConnectionStringBuilder connectionString;
-        public Authentication(SqlConnectionStringBuilder connectionString)
+        private ClientDataEntities context;
+        public Authentication(ClientDataEntities context)
         {
-            this.connectionString = connectionString;
+            this.context = context;
 
             InitializeComponent();
 
@@ -33,37 +34,16 @@ namespace Homework17
 
         private void Enter_Click(object sender, RoutedEventArgs e)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString.ConnectionString))
+            string email = Login.Text;
+            string password = Password.Password;
+            context.LogIn.Load();
+
+            foreach(var item in context.LogIn)
             {
-                string sql = $@"SELECT * FROM LogIn WHERE [Email] = '{Login.Text}'";
-
-                connection.Open();
-                SqlCommand command = new SqlCommand(sql, connection);
-                SqlDataReader sqlData = command.ExecuteReader();
-                string email;
-                string password;
-
-                if (sqlData.HasRows)
+                if (item.Email == email && item.Password == password) 
                 {
-                    while(sqlData.Read()) 
-                    {
-                        email = sqlData.GetString(1);
-                        password = sqlData.GetString(2);
-                        Debug.WriteLine($"{email}, {password}");
-
-                        if (Password.Password != password)
-                        {
-                            //this.DialogResult = fslse;
-                            MessageBox.Show("Неверно введен пароль", "Ошибка", MessageBoxButton.OK);
-                        }
-                        else
-                        {
-                            this.DialogResult = true;
-                        }
-                        
-                    }
+                    DialogResult = true; break;
                 }
-                sqlData.Close();
             }
         }
     }
