@@ -40,6 +40,9 @@ namespace Homework17
             Preparing();
         }
 
+        /// <summary>
+        /// Загрузка базы данных
+        /// </summary>
         private void Preparing()
         {
             context1.Clients.Load();
@@ -52,11 +55,21 @@ namespace Homework17
             //row.BeginEdit();
         }
 
+        /// <summary>
+        /// Обработчик события: обновления данных уже имеющейся записи.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DGCurrentCellChanged(object sender, EventArgs e)
         {
             context1.SaveChanges();
         }
 
+        /// <summary>
+        /// Создание новой записи.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItemAddClick(object sender, RoutedEventArgs e)
         {
             AddWindow add = new AddWindow(context1);
@@ -69,6 +82,11 @@ namespace Homework17
             }
         }
 
+        /// <summary>
+        /// Удаление записи.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItemDeleteClick(object sender, RoutedEventArgs e)
         {
             var item = Data.SelectedItem;
@@ -77,6 +95,11 @@ namespace Homework17
             context1.SaveChanges();
         }
 
+        /// <summary>
+        /// Вывод заказов выделенного клиента.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItemViewClick(object sender, RoutedEventArgs e)
         {
             var item = Data.SelectedItem;

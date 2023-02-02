@@ -31,6 +31,9 @@ namespace Homework17
             Preparing();
         }
 
+        /// <summary>
+        /// Подготовка таблицы с заказами.
+        /// </summary>
         private void Preparing()
         {
             context2= new OrdersEntities();
