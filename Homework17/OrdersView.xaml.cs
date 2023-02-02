@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -21,9 +22,7 @@ namespace Homework17
     /// </summary>
     public partial class OrdersView : Window
     {
-        SqlConnection connection;
-        SqlDataAdapter adapter;
-        DataTable table;
+        OrdersEntities context2;
         string email;
         public OrdersView(string email)
         {
@@ -34,25 +33,9 @@ namespace Homework17
 
         private void Preparing()
         {
-            SqlConnectionStringBuilder strCon = new SqlConnectionStringBuilder()
-            {
-                DataSource = @"(localdb)\MSSQLLocalDB",
-                InitialCatalog = @"Orders",
-                IntegratedSecurity = true,
-                Pooling = false
-            };
-
-            connection = new SqlConnection(strCon.ConnectionString);
-            table = new DataTable();
-            adapter = new SqlDataAdapter();
-
-            var sql = $@"SELECT * FROM OrderList
-                        WHERE [email] = '{email}'
-                        ORDER BY OrderList.Id;";
-            adapter.SelectCommand = new SqlCommand(sql, connection);
-
-            adapter.Fill(table);
-            Data2.DataContext = table.DefaultView;
+            context2= new OrdersEntities();
+            context2.OrderList.Load();
+            Data2.DataContext = context2.OrderList.Local.Where(o => o.email == email);
         }
     }
 }

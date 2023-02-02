@@ -16,6 +16,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
 using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Migrations;
+using System.Windows.Markup;
 
 namespace Homework17
 {
@@ -24,128 +27,60 @@ namespace Homework17
     /// </summary>
     public partial class MainWindow : Window
     {
-        SqlConnection connection;
-        SqlDataAdapter adapter;
-        DataTable table;
-        DataRowView row;
+        ClientDataEntities1 context1;
 
         public MainWindow()
         {
-
-            SqlConnectionStringBuilder strCon = new SqlConnectionStringBuilder()
-            {
-                DataSource = @"(localdb)\MSSQLLocalDB",
-                InitialCatalog = @"ClientData",
-                IntegratedSecurity = true,
-                Pooling = false
-            };
-
-            connection = new SqlConnection() { ConnectionString = strCon.ConnectionString };
-
-            Authentication login = new Authentication(strCon);
+            context1 = new ClientDataEntities1();
+            Authentication login = new Authentication(context1);
             login.ShowDialog();
+            var clients = context1.Clients.Local.ToBindingList();
 
             InitializeComponent(); 
             Preparing();
-
-            conStr.Text = $"Connection string:{strCon.ConnectionString} Connection state:{connection.State}";
-
-            #region mbwn
-            //try
-            //{
-            //    connection.Open();
-            //    Debug.WriteLine($"Connection string:{connection.ConnectionString}\nConnection state:{connection.State}");
-            //}
-            //catch (Exception e)
-            //{
-            //    Debug.WriteLine(e.Message);
-            //    Debug.WriteLine($"{connection.State}");
-            //}
-            ////finally { connection.Close(); }
-            ////Debug.WriteLine($"Connection state:{connection.State}");
-            #endregion
         }
+
         private void Preparing()
         {
-            table= new DataTable();
-            adapter = new SqlDataAdapter();
-
-            var sql = @"SELECT * FROM Clients ORDER BY Clients.Id";
-            adapter.SelectCommand = new SqlCommand(sql, connection);
-
-            sql = @"INSERT INTO Clients (Surname, Name, Midname, Phone, Email)
-                            VALUES(@Surname, @Name, @Midname, @Phone, @Email);
-                    SET @Id = @@IDENTITY;";
-            adapter.InsertCommand= new SqlCommand(sql, connection);
-            adapter.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 4, "Id").Direction = ParameterDirection.Output;
-            adapter.InsertCommand.Parameters.Add("@Surname", SqlDbType.NVarChar, 30, "Surname");
-            adapter.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 30, "Name");
-            adapter.InsertCommand.Parameters.Add("@Midname", SqlDbType.NVarChar, 30, "Midname");
-            adapter.InsertCommand.Parameters.Add("@Phone", SqlDbType.Int, 6, "Phone");
-            adapter.InsertCommand.Parameters.Add("@Email", SqlDbType.NVarChar, 20, "Email");
-
-            sql = @"UPDATE Clients SET
-                           Surname = @Surname,
-                           Name = @Name,
-                           Midname = @Midname,
-                           Phone = @Phone,
-                           Email = @Email
-                    WHERE Id = @Id;";
-            adapter.UpdateCommand= new SqlCommand(sql, connection);
-            adapter.UpdateCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id").SourceVersion = DataRowVersion.Original;
-            adapter.UpdateCommand.Parameters.Add("@Surname", SqlDbType.NVarChar, 30, "Surname");
-            adapter.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 30, "Name");
-            adapter.UpdateCommand.Parameters.Add("@Midname", SqlDbType.NVarChar, 30, "Midname");
-            adapter.UpdateCommand.Parameters.Add("@Phone", SqlDbType.Int, 6, "Phone");
-            adapter.UpdateCommand.Parameters.Add("@Email", SqlDbType.NVarChar, 20, "Email");
-
-            sql = @"DELETE FROM Clients WHERE Id = @Id";
-            adapter.DeleteCommand= new SqlCommand(sql, connection);
-            adapter.DeleteCommand.Parameters.Add("@Id", SqlDbType.Int, 4, "Id");
-
-            adapter.Fill(table);
-            Data.DataContext= table.DefaultView;
+            context1.Clients.Load();
+            Data.DataContext = context1.Clients.Local;
         }
 
         private void DGCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-
-            row = (DataRowView)Data.SelectedItem;
-            row.BeginEdit();
+            //var item = (Clients)Data.SelectedItem;
+            //row.BeginEdit();
         }
 
         private void DGCurrentCellChanged(object sender, EventArgs e)
         {
-            if (row == null) return;
-            row.EndEdit();
-            adapter.Update(table);
+            context1.SaveChanges();
         }
 
         private void MenuItemAddClick(object sender, RoutedEventArgs e)
         {
-            DataRow r = table.NewRow();
-            AddWindow add = new AddWindow(r);
+            AddWindow add = new AddWindow(context1);
             add.ShowDialog();
 
 
             if (add.DialogResult.Value == true)
             {
-                table.Rows.Add(r);
-                adapter.Update(table);
+                context1.SaveChanges();
             }
         }
 
         private void MenuItemDeleteClick(object sender, RoutedEventArgs e)
         {
-            row = (DataRowView)Data.SelectedItem;
-            row.Row.Delete();
-            adapter.Update(table);
+            var item = Data.SelectedItem;
+            Clients client = item as Clients;
+            context1.Clients.Remove(client);
+            context1.SaveChanges();
         }
 
         private void MenuItemViewClick(object sender, RoutedEventArgs e)
         {
-            row = (DataRowView)Data.SelectedItem;
-            string email = Convert.ToString((Email.GetCellContent(row) as TextBlock).Text);
+            var item = Data.SelectedItem;
+            string email = Convert.ToString((Email.GetCellContent(item) as TextBlock).Text);
             OrdersView orders = new OrdersView(email);
             orders.ShowDialog();
         }

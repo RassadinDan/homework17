@@ -20,22 +20,36 @@ namespace Homework17
     /// </summary>
     public partial class AddWindow : Window
     {
+        public Clients client;
         private AddWindow()
         {
+            client = new Clients();
             InitializeComponent();
         }
 
-        public AddWindow(DataRow row) : this()
-        {
+        public AddWindow(ClientDataEntities1 context1) : this()
+        { 
             CancelBut.Click += delegate { this.DialogResult = false; };
 
             OkBut.Click += delegate
             {
-                row["Surname"] = SurnameBox.Text;
-                row["Name"] = NameBox.Text;
-                row["Midname"] = MidnameBox.Text;
-                row["Phone"] = PhoneBox.Text;
-                row["Email"] = EmailBox.Text;
+                var c = new
+                {
+                    Id = context1.Clients.Count<Clients>() + 1,
+                    Surname = SurnameBox.Text,
+                    Name = NameBox.Text,
+                    Midname = MidnameBox.Text,
+                    Phone = Convert.ToInt32(PhoneBox.Text),
+                    Email = EmailBox.Text
+                } ;
+
+                client.Id = c.Id;
+                client.Surname = c.Surname;
+                client.Name = c.Name;
+                client.Midname = c.Midname;
+                client.Phone = c.Phone;
+                client.Email = c.Email;
+                context1.Clients.Add(client);
                 this.DialogResult = true;
             };
 

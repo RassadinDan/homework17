@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище ClientDataModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "ClientData.dbo.Clients" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+  <EntityType Name="Clients">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Surname" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="Midname" />
+      <PropertyRef Name="Email" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Surname" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="Midname" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="Phone" Type="int" />
+    <Property Name="Email" Type="nvarchar" MaxLength="20" Nullable="false" />
+  </EntityType>
+  <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "ClientData.dbo.LogIn" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+  <EntityType Name="LogIn">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Email" />
+      <PropertyRef Name="Password" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="30" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="Хранилище ClientDataModelContainer">
+    <EntitySet Name="Clients" EntityType="Self.Clients" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [Clients].[Id] AS [Id], 
+    [Clients].[Surname] AS [Surname], 
+    [Clients].[Name] AS [Name], 
+    [Clients].[Midname] AS [Midname], 
+    [Clients].[Phone] AS [Phone], 
+    [Clients].[Email] AS [Email]
+    FROM [dbo].[Clients] AS [Clients]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="LogIn" EntityType="Self.LogIn" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [LogIn].[Id] AS [Id], 
+    [LogIn].[Email] AS [Email], 
+    [LogIn].[Password] AS [Password]
+    FROM [dbo].[LogIn] AS [LogIn]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

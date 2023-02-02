@@ -22,14 +22,12 @@ namespace Homework17
     /// </summary>
     public partial class Authentication : Window
     {
-        private ClientDataEntities context;
-        public Authentication(ClientDataEntities context)
+        private ClientDataEntities1 context;
+        public Authentication(ClientDataEntities1 context)
         {
             this.context = context;
 
             InitializeComponent();
-
-
         }
 
         private void Enter_Click(object sender, RoutedEventArgs e)
